@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.local.get({ metrics: [] }, function (result) {
         const metrics = result.metrics;
 
-        // Organize as métricas por dia
         const metricsByDay = {};
 
         metrics.forEach(metricObj => {
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        precision: 0 // Isso força os valores a serem inteiros
+                        precision: 0
                     }
                 }
             }
