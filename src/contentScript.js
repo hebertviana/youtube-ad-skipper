@@ -4,33 +4,53 @@ chrome.storage.sync.get(['skipTime'], function (result) {
     console.log('Skip time:', skipTime);
 
     function clickSkipAdButton() {
-        const skipButton = document.querySelector('.ytp-ad-skip-button.ytp-button');
+        try {
+            const skipButton = document.querySelector('.ytp-ad-skip-button.ytp-button');
 
-        if (skipButton) {
-            setTimeout(() => {
+            if (skipButton) {
                 skipButton.click();
                 console.log('Clicked "Skip Ad" button');
                 saveMetric('adSkipped');
-                clickSkipAdButton();
-            }, skipTime);
-        } else {
-            setTimeout(() => {
-                clickSkipAdButton();
-                console.log('Wait 500 milisegundos');
-            }, 500);
+            }
+        } catch (error) {
+            console.error('Error clicking "Skip Ad" button:', error);
+            saveMetric('adSkipError');
         }
     }
 
     function saveMetric(metric) {
         chrome.storage.local.get({ metrics: [] }, function (result) {
-            const metrics = result.metrics;
-            metrics.push({ metric, timestamp: new Date().toISOString() });
+            try {
+                const metrics = result.metrics;
+                metrics.push({ metric, timestamp: new Date().toISOString() });
 
-            chrome.storage.local.set({ metrics }, function () {
-                console.log('Metric saved:', metric);
-            });
+                chrome.storage.local.set({ metrics }, function () {
+                    console.log('Metric saved:', metric);
+                });
+            } catch (error) {
+                console.error('Error saving metric:', error);
+            }
         });
     }
 
-    clickSkipAdButton();
+    const observer = new MutationObserver(function (mutationsList) {
+        try {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    clickSkipAdButton();
+                }
+            }
+        } catch (error) {
+            console.error('MutationObserver error:', error);
+        }
+    });
+
+    const videoPlayer = document.querySelector('.html5-video-player');
+    if (videoPlayer) {
+        try {
+            observer.observe(videoPlayer, { childList: true, subtree: true });
+        } catch (error) {
+            console.error('Error starting MutationObserver:', error);
+        }
+    }
 });
