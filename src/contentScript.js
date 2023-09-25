@@ -5,6 +5,10 @@ chrome.storage.sync.get(['skipTime'], function (result) {
 
     function clickSkipAdButton() {
         const skipButton = document.querySelector('.ytp-ad-skip-button.ytp-button');
+        const skipPremium = document.querySelector('yt-button-renderer#dismiss-button.style-scope.yt-mealbar-promo-renderer');
+        const deleteCompanion = document.querySelector('div#companion.style-scope.ytd-companion-slot-renderer')
+        const deletePromoted = document.querySelector('ytd-promoted-sparkles-web-renderer.style-scope.ytd-in-feed-ad-layout-renderer.sparkles-light-cta')
+        const deleteAdSlot = document.querySelector('ytd-ad-slot-renderer.style-scope.ytd-rich-item-renderer')     
 
         if (skipButton) {
             setTimeout(() => {
@@ -13,7 +17,40 @@ chrome.storage.sync.get(['skipTime'], function (result) {
                 saveMetric('adSkipped');
                 clickSkipAdButton();
             }, skipTime);
-        } else {
+        } 
+        if (skipPremium) {
+            setTimeout(() => {
+                skipPremium.click();
+                console.log('Clicked "Skip Ad" Premium');
+                saveMetric('elementRemoved');
+                clickSkipAdButton();
+            }, skipTime);
+        }
+        if (deleteCompanion) {
+            setTimeout(() => {
+                deleteCompanion.remove();
+                console.log('Delete "Delete Ad" Companion');
+                saveMetric('elementRemoved');
+                clickSkipAdButton();
+            }, skipTime);
+        }
+        if (deletePromoted) {
+            setTimeout(() => {
+                deletePromoted.remove();
+                console.log('Delete "Delete Ad" Promoted');
+                saveMetric('elementRemoved');
+                clickSkipAdButton();
+            }, skipTime);
+        }
+        if (deleteAdSlot) {
+            setTimeout(() => {
+                deleteAdSlot.remove();
+                console.log('Delete "Delete Ad" Slot');
+                saveMetric('elementRemoved');
+                clickSkipAdButton();
+            }, skipTime);
+        }
+        else {
             setTimeout(() => {
                 clickSkipAdButton();
                 console.log('Wait 500 milisegundos');
