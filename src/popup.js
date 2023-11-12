@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const extensionVersion = chrome.runtime.getManifest().version;
     const currentVersionElement = document.getElementById('currentVersion');
     const newVersionElement = document.getElementById('newVersion');
-    const updateButton = document.getElementById('updateButton');
 
     // Display current version
     currentVersionElement.textContent = extensionVersion;
@@ -93,7 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check if a new version is available
             if (data.version !== extensionVersion) {
                 newVersionElement.textContent = data.version;
-                updateButton.style.display = 'block';
+
+                // Set the download URL for the new version
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = data.download_url;
             }
         })
         .catch(error => {
