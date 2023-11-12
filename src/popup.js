@@ -1,7 +1,7 @@
 chrome.storage.local.get({ metrics: [] }, function (result) {
     const metrics = result.metrics;
 
-    // Crie objetos para armazenar métricas por tipo
+    // Create objects to store metrics by type
     const metricsByType = {
         adSkipped: {},
         adSkipError: {},
@@ -9,7 +9,7 @@ chrome.storage.local.get({ metrics: [] }, function (result) {
         elementRemoved: {}
     };
 
-    // Organize as métricas por dia e tipo
+    // Organize metrics by day and type
     metrics.forEach(metricObj => {
         const date = new Date(metricObj.timestamp).toLocaleDateString();
 
@@ -19,7 +19,7 @@ chrome.storage.local.get({ metrics: [] }, function (result) {
         metricsByType[metricObj.metric][date]++;
     });
 
-    // Obtenha todas as datas únicas
+    // Get all unique dates
     const uniqueDates = new Set(
         Object.keys(metricsByType.adSkipped)
             .concat(Object.keys(metricsByType.adSkipError))
@@ -27,10 +27,10 @@ chrome.storage.local.get({ metrics: [] }, function (result) {
             .concat(Object.keys(metricsByType.elementRemoved))
     );
 
-    // Ordene as datas
+    // Order the dates
     const sortedDates = Array.from(uniqueDates).sort((a, b) => new Date(a) - new Date(b));
 
-    // Crie objetos organizados por tipo e data
+    // Create objects organized by type and date
     const organizedMetrics = {};
     Object.keys(metricsByType).forEach(metricType => {
         organizedMetrics[metricType] = {};
@@ -75,4 +75,29 @@ chrome.storage.local.get({ metrics: [] }, function (result) {
     };
 
     new Chart(ctx, chartConfig);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const extensionVersion = chrome.runtime.getManifest().version;
+    const currentVersionElement = document.getElementById('currentVersion');
+    const newVersionElement = document.getElementById('newVersion');
+    const updateButton = document.getElementById('updateButton');
+
+    // Display current version
+    currentVersionElement.textContent = extensionVersion;
+
+    // Fetch version information
+    fetch('https://raw.githubusercontent.com/hebertviana/youtube-ad-skipper/main/version.json')
+        .then(response => response.json())
+        .then(data => {
+            // Check if a new version is available
+            if (data.version !== extensionVersion) {
+                newVersionElement.textContent = data.version;
+                updateButton.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching version information:', error);
+        });
+
 });
