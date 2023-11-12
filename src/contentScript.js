@@ -4,7 +4,7 @@ chrome.storage.sync.get(['skipTime'], function (result) {
     console.log('Skip time:', skipTime);
 
     function clickSkipAdButton() {
-        const skipButton = document.querySelector('.ytp-ad-skip-button.ytp-button');
+        const skipButton = document.querySelector('.ytp-ad-skip-button-modern.ytp-button');
         const skipPremium = document.querySelector('yt-button-renderer#dismiss-button.style-scope.yt-mealbar-promo-renderer');
         const deleteCompanion = document.querySelector('div#companion.style-scope.ytd-companion-slot-renderer')
         const deletePromoted = document.querySelector('ytd-promoted-sparkles-web-renderer.style-scope.ytd-in-feed-ad-layout-renderer.sparkles-light-cta')
